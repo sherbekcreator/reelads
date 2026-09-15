@@ -1,124 +1,201 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Reel Ads</title>
+    
+    <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Adsgram SDK -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #0d141e;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .card {
+            background: #18222d;
+            width: 100%;
+            max-width: 360px;
+            border-radius: 20px;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #2ea5ff;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge {
+            background-color: rgba(0, 194, 130, 0.15);
+            color: #00c282;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 194, 130, 0.3);
+        }
+
+        .user-box {
+            background: #111923;
+            width: 100%;
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            line-height: 1.6;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .user-box span {
+            color: #8393a3;
+        }
+
+        .user-box strong {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .btn-watch {
+            background: linear-gradient(135deg, #0088cc, #006699);
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 14px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-            text-align: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+            transition: all 0.2s ease;
         }
-        .card {
-            background-color: #1e293b;
-            padding: 24px;
-            border-radius: 16px;
-            max-width: 380px;
-            width: 100%;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+
+        .btn-watch:active {
+            transform: scale(0.98);
+            opacity: 0.9;
         }
-        h1 {
-            font-size: 26px;
-            margin: 0 0 10px 0;
-            color: #38bdf8;
-            letter-spacing: 1px;
+
+        .btn-watch:disabled {
+            background: #2b394a;
+            color: #637587;
+            cursor: not-allowed;
+            box-shadow: none;
         }
-        .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 9999px;
+
+        .status-msg {
+            margin-top: 14px;
             font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            background-color: #334155;
-            color: #94a3b8;
-        }
-        .status-badge.success {
-            background-color: #064e3b;
-            color: #34d399;
-        }
-        .status-badge.warning {
-            background-color: #78350f;
-            color: #fbbf24;
-        }
-        .user-box {
-            background-color: #0f172a;
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 12px;
-            font-size: 14px;
-            text-align: left;
-            word-break: break-all;
+            text-align: center;
+            min-height: 18px;
         }
     </style>
 </head>
 <body>
+
     <div class="card">
-        <h1>Reel Ads</h1>
-        <div id="badge" class="status-badge">Tekshirilmoqda...</div>
-        <div id="content" class="user-box">Yuklanmoqda...</div>
+        <div class="title">Reel Ads</div>
+        <div class="badge">Xavfsiz ulandi</div>
+
+        <div class="user-box">
+            <div><span>Foydalanuvchi: </span><strong id="userName">Yuklanmoqda...</strong></div>
+            <div><span>ID: </span><strong id="userId">Yuklanmoqda...</strong></div>
+            <div><span>Username: </span><strong id="userTag">...</strong></div>
+        </div>
+
+        <button id="showAdBtn" class="btn-watch">
+            <span>🎬</span> Reklama ko‘rish (Reward)
+        </button>
+
+        <div id="statusMsg" class="status-msg"></div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
 
-        const badgeEl = document.getElementById('badge');
-        const contentEl = document.getElementById('content');
+        // Foydalanuvchi ma'lumotlarini ekranga chiqarish
+        const user = tg?.initDataUnsafe?.user;
+        const userIdElem = document.getElementById("userId");
+        const userNameElem = document.getElementById("userName");
+        const userTagElem = document.getElementById("userTag");
+        const statusMsg = document.getElementById("statusMsg");
 
-        async function authenticate() {
-            const initData = tg.initData;
+        let currentUserId = null;
 
-            // Agar oddiy brauzerda ochilgan bo'lsa (Telegram ichida emas)
-            if (!initData) {
-                badgeEl.className = 'status-badge warning';
-                badgeEl.innerText = 'Oddiy brauzer';
-                contentEl.innerHTML = 'Ilova faqat Telegram orqali ochilganda xavfsiz autentifikatsiyadan o\'tadi.';
+        if (user) {
+            currentUserId = user.id;
+            userNameElem.textContent = `${user.first_name || ""} ${user.last_name || ""}`.trim() || "Foydalanuvchi";
+            userIdElem.textContent = user.id;
+            userTagElem.textContent = user.username ? `@${user.username}` : "Mavjud emas";
+        } else {
+            userNameElem.textContent = "Mehmon";
+            userIdElem.textContent = "Aniqlanmadi";
+            userTagElem.textContent = "—";
+        }
+
+        // Adsgram sozlamasi (Sizning UnitID: 41222)
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "41222" }) : null;
+        const showBtn = document.getElementById("showAdBtn");
+
+        showBtn.addEventListener("click", () => {
+            if (!AdController) {
+                statusMsg.style.color = "#ff4d4d";
+                statusMsg.textContent = "Reklama tizimi yuklanmadi.";
                 return;
             }
 
-            // Telegram ichida ochilgan bo'lsa, backendga tekshiruvga yuboramiz
-            try {
-                const response = await fetch('/api/auth/verify', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ init_data: initData })
-                });
+            showBtn.disabled = true;
+            statusMsg.style.color = "#8393a3";
+            statusMsg.textContent = "Reklama ochilmoqda...";
 
-                const data = await response.json();
-
-                if (response.ok && data.authenticated) {
-                    badgeEl.className = 'status-badge success';
-                    badgeEl.innerText = 'Xavfsiz ulandi';
-                    contentEl.innerHTML = `
-                        <b>Foydalanuvchi:</b> ${data.user.first_name || ''} ${data.user.last_name || ''}<br>
-                        <b>ID:</b> ${data.user.id}<br>
-                        <b>Username:</b> @${data.user.username || 'mavjud emas'}
-                    `;
-                } else {
-                    badgeEl.className = 'status-badge warning';
-                    badgeEl.innerText = 'Xatolik';
-                    contentEl.innerText = data.detail || 'Autentifikatsiya rad etildi.';
+            AdController.show().then((result) => {
+                showBtn.disabled = false;
+                statusMsg.style.color = "#00c282";
+                statusMsg.textContent = "✅ Reklama ko'rildi! Mukofot hisoblandi.";
+                if (tg?.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred("success");
                 }
-            } catch (err) {
-                badgeEl.className = 'status-badge warning';
-                badgeEl.innerText = 'Aloqa xatosi';
-                contentEl.innerText = 'Serverga ulanib bo\'lmadi.';
-            }
-        }
-
-        authenticate();
+            }).catch((result) => {
+                showBtn.disabled = false;
+                statusMsg.style.color = "#ff9900";
+                statusMsg.textContent = "⚠️ Reklama to'liq ko'rilmadi yoki yopildi.";
+                if (tg?.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred("warning");
+                }
+            });
+        });
     </script>
 </body>
 </html>
