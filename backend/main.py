@@ -38,7 +38,7 @@ async def start_handler(message: types.Message):
             [
                 InlineKeyboardButton(
                     text="🎬 Play & Earn",
-                    web_app=WebAppInfo(url="https://reelads.onrender.com")
+                    web_app=WebAppInfo(url="https://ibodfreeuc.shop")
                 )
             ]
         ]
