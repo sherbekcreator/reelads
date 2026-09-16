@@ -145,7 +145,6 @@
             tg.expand();
         }
 
-        // Foydalanuvchi ma'lumotlarini ekranga chiqarish
         const user = tg?.initDataUnsafe?.user;
         const userIdElem = document.getElementById("userId");
         const userNameElem = document.getElementById("userName");
@@ -165,8 +164,8 @@
             userTagElem.textContent = "—";
         }
 
-        // Adsgram sozlamasi (UnitID: 41222 va debug rejimi yoqilgan)
-        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "41222", debug: true }) : null;
+        // debug: "true" qilib belgilandi
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "41222", debug: "true" }) : null;
         const showBtn = document.getElementById("showAdBtn");
 
         showBtn.addEventListener("click", () => {
