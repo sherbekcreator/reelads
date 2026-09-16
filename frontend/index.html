@@ -7,8 +7,6 @@
     
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Adsgram SDK -->
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
     <style>
         * {
@@ -150,11 +148,9 @@
         const userNameElem = document.getElementById("userName");
         const userTagElem = document.getElementById("userTag");
         const statusMsg = document.getElementById("statusMsg");
-
-        let currentUserId = null;
+        const showBtn = document.getElementById("showAdBtn");
 
         if (user) {
-            currentUserId = user.id;
             userNameElem.textContent = `${user.first_name || ""} ${user.last_name || ""}`.trim() || "Foydalanuvchi";
             userIdElem.textContent = user.id;
             userTagElem.textContent = user.username ? `@${user.username}` : "Mavjud emas";
@@ -164,36 +160,27 @@
             userTagElem.textContent = "—";
         }
 
-        // Rasmiy test blockId ulandi
-        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "reward-test", debug: true }) : null;
-        const showBtn = document.getElementById("showAdBtn");
-
+        // Tizimni qurish uchun barqaror reklama simulyatsiyasi
         showBtn.addEventListener("click", () => {
-            if (!AdController) {
-                statusMsg.style.color = "#ff4d4d";
-                statusMsg.textContent = "Reklama tizimi yuklanmadi.";
-                return;
-            }
-
             showBtn.disabled = true;
+            let seconds = 3;
             statusMsg.style.color = "#8393a3";
-            statusMsg.textContent = "Reklama ochilmoqda...";
+            statusMsg.textContent = `Reklama ko'rilmoqda... (${seconds}s)`;
 
-            AdController.show().then((result) => {
-                showBtn.disabled = false;
-                statusMsg.style.color = "#00c282";
-                statusMsg.textContent = "✅ Reklama ko'rildi! Mukofot hisoblandi.";
-                if (tg?.HapticFeedback) {
-                    tg.HapticFeedback.notificationOccurred("success");
+            const timer = setInterval(() => {
+                seconds--;
+                if (seconds > 0) {
+                    statusMsg.textContent = `Reklama ko'rilmoqda... (${seconds}s)`;
+                } else {
+                    clearInterval(timer);
+                    showBtn.disabled = false;
+                    statusMsg.style.color = "#00c282";
+                    statusMsg.textContent = "✅ Reklama yakunlandi! Mukofot berildi.";
+                    if (tg?.HapticFeedback) {
+                        tg.HapticFeedback.notificationOccurred("success");
+                    }
                 }
-            }).catch((result) => {
-                showBtn.disabled = false;
-                statusMsg.style.color = "#ff9900";
-                statusMsg.textContent = "⚠️ Reklama to'liq ko'rilmadi yoki yopildi.";
-                if (tg?.HapticFeedback) {
-                    tg.HapticFeedback.notificationOccurred("warning");
-                }
-            });
+            }, 1000);
         });
     </script>
 </body>
