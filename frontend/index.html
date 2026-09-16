@@ -165,8 +165,8 @@
             userTagElem.textContent = "—";
         }
 
-        // Adsgram sozlamasi (Sizning UnitID: 41222)
-        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "41222" }) : null;
+        // Adsgram sozlamasi (UnitID: 41222 va debug rejimi yoqilgan)
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "41222", debug: true }) : null;
         const showBtn = document.getElementById("showAdBtn");
 
         showBtn.addEventListener("click", () => {
