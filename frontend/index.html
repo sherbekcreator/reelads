@@ -164,8 +164,8 @@
             userTagElem.textContent = "—";
         }
 
-        // debug to'g'ri boolean (qo'shtirnoqsiz true) qilindi
-        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "41222", debug: true }) : null;
+        // Rasmiy test blockId ulandi
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "reward-test", debug: true }) : null;
         const showBtn = document.getElementById("showAdBtn");
 
         showBtn.addEventListener("click", () => {
